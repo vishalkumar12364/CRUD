@@ -21,10 +21,30 @@ namespace CRUD.Controllers
         }
 
         // GET: api/Products
-        [HttpGet]
-        public IEnumerable<Product> Get()
+/*        [HttpGet]
+        public IEnumerable<Product> Get(string sortPrice)
         {
-            return productsDbContext.Products;
+            IQueryable<Product> products;
+            switch (sortPrice)
+            {
+                case "desc":
+                    products = productsDbContext.Products.OrderByDescending(p => p.ProductPrice);
+                    break;
+                case "asc":
+                    products = productsDbContext.Products.OrderBy(p => p.ProductPrice);
+                    break;
+                default:
+                    products = productsDbContext.Products;
+                    break;
+            }
+            return products;
+        }*/
+
+        [HttpGet]
+        public IEnumerable<Product> Get(string searchProduct)
+        {
+            var products = productsDbContext.Products.Where(p => p.ProductName.StartsWith(searchProduct));
+            return products;
         }
 
         // GET: api/Products/5

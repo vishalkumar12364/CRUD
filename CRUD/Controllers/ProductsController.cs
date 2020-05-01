@@ -4,20 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using CRUD.Data;
 using CRUD.Models;
+using CRUD.Services;
 
 namespace CRUD.Controllers
-{
+{   
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+     public class ProductsController : ControllerBase
     {
-        ProductsDbContext productsDbContext;
+        private  IProduct productRepository;
 
-        public ProductsController(ProductsDbContext _productsDbContext)
+        public ProductsController (IProduct _productRepository)
         {
-            productsDbContext = _productsDbContext;
+            productRepository = _productRepository;
         }
 
         // GET: api/Products
@@ -43,15 +43,14 @@ namespace CRUD.Controllers
         [HttpGet]
         public IEnumerable<Product> Get(string searchProduct)
         {
-            var products = productsDbContext.Products.Where(p => p.ProductName.StartsWith(searchProduct));
-            return products;
+            return productRepository.GetProducts();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(int id)
         {
-           var product = productsDbContext.Products.SingleOrDefault(m => m.ProductID == id);
+            var product = productRepository.GetProduct(id);
             if (product == null)
             {
                 return NotFound("No Records found");
@@ -67,8 +66,7 @@ namespace CRUD.Controllers
             {
                 return BadRequest(ModelState);
             }
-            productsDbContext.Products.Add(product);
-            productsDbContext.SaveChanges(true);
+            productRepository.AddProduct(product);
             return StatusCode(StatusCodes.Status201Created);
         }
 
@@ -87,8 +85,7 @@ namespace CRUD.Controllers
             }
             try
             {
-            productsDbContext.Products.Update(product);
-            productsDbContext.SaveChanges(true);
+                productRepository.UpdateProduct(product);
             }
             catch (Exception e)
             {
@@ -105,13 +102,7 @@ namespace CRUD.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var product = productsDbContext.Products.SingleOrDefault(m => m.ProductID == id);
-            if(product == null)
-            {
-                return NotFound("No Record Found");
-            }
-            productsDbContext.Products.Remove(product);
-            productsDbContext.SaveChanges(true);
+            productRepository.DeleteProduct(id);
             return Ok("Post Deleted");
         }
     }

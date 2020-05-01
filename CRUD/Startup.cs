@@ -32,6 +32,7 @@ namespace CRUD
             services.AddControllers();
             services.AddDbContext<ProductsDbContext>(option => option.UseSqlServer(@"Data Source = DESKTOP-M0LGUNV;Integrated Security=True; Initial Catalog = ProductsDb;"));
             services.AddScoped<IProduct, ProductReposiory>();
+            services.AddApiVersioning();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

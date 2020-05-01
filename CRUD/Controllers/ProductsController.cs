@@ -9,6 +9,7 @@ using CRUD.Services;
 
 namespace CRUD.Controllers
 {   
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
      public class ProductsController : ControllerBase

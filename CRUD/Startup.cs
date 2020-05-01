@@ -13,7 +13,7 @@ using CRUD.Models;
 using CRUD.Data;
 using CRUD.Services;
 using Microsoft.EntityFrameworkCore;
-
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace CRUD
 {
@@ -33,7 +33,9 @@ namespace CRUD
             services.AddDbContext<ProductsDbContext>(option => option.UseSqlServer(@"Data Source = DESKTOP-M0LGUNV;Integrated Security=True; Initial Catalog = ProductsDb;"));
             services.AddScoped<IProduct, ProductReposiory>();
             services.AddApiVersioning();
+            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Product Api", Version = "v1" }));
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ProductsDbContext productsDbContext)
@@ -54,6 +56,10 @@ namespace CRUD
 
 
             productsDbContext.Database.EnsureCreated();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api for Products"));
+
         }
     }
 }
